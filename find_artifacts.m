@@ -13,19 +13,16 @@
 % In 'find_slow_waves', 'red' will be checked at indexes of downward zero-crossing, negative peak, upward zero-crossing and positive peak, to see if they are part of artifact or not.
 % (When there is an artifact detected, the algorithm skip the event and doesn't check if it's a slow wave)
 
-% For each artifact detected, are displayed: 
-% 1. the beginning of the artifact, which is the beginning of the fast component  
-% 2. the end of the fast component of the artifact
-% 3. the end of the first oscillation in slow component, if a slow component exists (which is defined as first zero-crossing occurring just after the last high-value of slow component)
-%       ("There's no slow component" will be displayed if no slow component exists; '?' will be displayed if no zero-crossing is found.)
-% 4. the end of the total artifact:
-%      - either (in most cases) the end of the total slow component (the end of the last oscillation in the slow component)
-%      - or the end of fast component, if there is no slow component
+% For each detected artifact, are displayed:
+% 1. the beginning of the artifact, which is the beginning of the fast component;
+% 2. the end of the fast component;
+% 3. the end of the first sub-component2 in the slow component, if a slow component exists. It is defined as the first zero-crossing occurring just after the last high value of the first sub-component) 3;
+% 4. the end of the total artifact: either the end of the slow component (in most cases), or the end of fast component if there is no slow component;
 
 % NB: thresholds from lfp_defaults used in this file (the user can modify them if necessary). 
 % def.butterorder = 2; 		
 % def.fcuthigh = 100 ; 					
-% def.amplitude_artifact = 20;			% Threshold of amplitude of the fast component of the artifact = amplitude in the high-pass filtered signal 
+% def.amplitude_artifact = 35;			% Threshold of amplitude of the fast component of the artifact = amplitude in the high-pass filtered signal 
 % def.artifact_cut_length = 1.7*def.fsample;			
 % def.amplitude_slow_artifact = 27;		% Threshold of amplitude of the slow component of the artifact 
 % def.endslow = 1;						% Maximal interval authorized between the first high value found for bLP and the first zero-crossing (in seconds)
@@ -37,8 +34,6 @@
 function [red, bHP] =  find_artifacts(V)	
 global def b t bHP	s	
 b = butterworth_low_pass(V);
-% lfp_defaults;				% has been added in principal.m
-% t = [1:1:size(V,1)];		% timepoints [index]
 s = t/ def.rate;
 
 
@@ -251,7 +246,6 @@ if iHighBHP ~=0					% if ~isempty(iHighBHP)						% We examine the last artifact 
 		realending = endplot;
 		disp(['                                                        ', num2str(realending/def.fsample), 's: end of total artifact']);		
 		disp(['                                                        Nothing above diapason from ', num2str(endplot/def.fsample), 's to ', num2str(upperbounddiapason/def.fsample), 's']);
-		% figure;	plot(s(endplot:upperbounddiapason), b(endplot:upperbounddiapason)); grid; xlabel('Time [s]');	ylabel('Low-pass filtered signal [microV]');			
 		
 	else							% If there's a peak above amplitude of diapason, then we have to look further to find the real ending of artifact, because what is above diapason is still part of the slow component of artifact. 
 		if length(V) - (abovediapason(end)+def.endslow*def.rate) > 0
