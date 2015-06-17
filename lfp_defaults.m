@@ -1,11 +1,11 @@
 function def = lfp_defaults 
 global def 
 
-def.fsample = 10000;						% for SA26, SA27, SA31 day x, SA32, SA33, SA34 	% The sampling frequency or sampling rate is the average number of samples obtained in one second (samples per second)
-% def.fsample = 20000;						% for SA14, SA15, SA16, SA17, SA19, SA31 day 1
+% def.fsample = 10000;						% for SA26, SA27, SA31 day x, SA32, SA33, SA34 	% The sampling frequency or sampling rate is the average number of samples obtained in one second (samples per second)
+def.fsample = 20000;						% for SA14, SA15, SA16, SA17, SA19, SA31 day 1
 
 def.minimal_duration_OA = 2.8;				% The algorithm will detect both 3 and 6 sec OAs 
-% def.minimal_duration_OA = 5;				% The algorithm will detect only 6 sec OAs		% 5.8 before
+% def.minimal_duration_OA = 5;				% The algorithm will detect only 6 sec OAs	
 
 %=============================================================================================================================================================
 
@@ -54,29 +54,14 @@ def.percentile = 90;
 % def.SWlength(4): minimal duration between current pos. peak and precedent pos. peak; also minimum duration between current neg. peak and precedent neg. peak; 
 %                  = 1500/5 = 300 ms;  i.e. we need 300 ms between SW negativity. But we can try even lower: 200
 %    	           the more it's low, the more SWs will be found.  
-
-% def.SWlength      	= [100 1250 1500];		% beginning
-% def.SWlength      	= [100 2400 1500];		% 12 may 
-% def.SWlength      	= [100 2400 2900];		% 13 may  
-% def.SWlength      	= [100 2900 3200];		% 13 may (to be sure)
-% def.SWlength      	= [100 3500 2900];		% 14 may: 3200 is exaggerated (we lose some waves); duration of negative peak = 3500: no risk because no risk of overlapping
-% def.SWlength      	= [100 3500 1500];		% 15 may: 1500 works for detecting both SWs at 1383 and 1384 sec 
-% def.SWlength      	= [100 3500 3000 300];	% 3000: 2900 can be replaced by 3000. 300 comes simply from 1500/5 
-% def.SWlength      	= [100 3500 3100 200];	
-												% 300 doesn't work for       Possible P3:    -40.8385 microV at 1832.5767s;    21.6972 microV at 1832.6601s
-												% because the precedent pos peak and the subsequent neg peak are in the same SW. With 200 instead of 300 it works.
  def.SWlength      		= [45 3500 3500 200];	% 3450 works for 3733 sec in SA16_09_07_2013_0002_Ch3
 
 											
-% Magnitude criteria (in microV): criteria of magnitude for SWS (-80 140) and delta waves (-40 75)
-% minimum negative peak amplitude: -40 for delta and -80 for SWS, 	% from Massimini		
-% minimum total magnitude: 			75 for delta and 140 for SWS 	% from Massimini
-% def.SWmAmpl       = [-30 75]; 	
-% def.SWmAmpl       = [-30 65]; 			
-% def.SWmAmpl       = [-28 49]; 			
-% def.SWmAmpl       = [-25 49]; 			
+% Magnitude criteria (in microV):
+% minimum negative peak amplitude: -20 
+% minimum total magnitude: 40
 def.SWmAmpl       = [-20 40]; 			
 
 def.OAsemiwindow = 5;
 
-return		% end 
+return		
