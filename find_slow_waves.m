@@ -1,14 +1,15 @@
-% This function aims to find slow waves. The argument of this function is the filtered signal from low-pass filter.
-% The criteria used are based on Massimini's but were softened: 
-% - criterion on slope between the negative and the positive peaks (criteria of minimum percentile 90).  (Has been added to the Massimini criteria)
+% This function aims to find slow waves. The argument of this function is the low-pass filtered signal.
+
+% The criteria used are CRC's criteria (which were based on Massimini's but were softened to detect all waves) and we had to adapt the corresponding values of thresholds (see lfp_defaults.m):
+% - criterion on slope between the negative and the positive peaks: criteria of minimum percentile 90 (has been added to the Massimini criteria)
 % - magnitude criteria in microV (minimum negative peak amplitude, minimum total peak-to-peak magnitude) 
-% - duration criteria in ms (duration of negative peak, duration between up zero-crossing and positive peak). 
+% - duration criteria in ms (duration of negative peak, duration between the up zero-crossing subsequent to negative peak and the down zero-crossing subsequent to the positive peak). 
 
 % At indexes of downward zero-crossing, negative peak, upward zero-crossing and positive peak, the vector 'red' returned by the function 'find_artifacts' 
 % is useful to indicate if these indexes are parts of artifacts or not.
-% (When there is an artifact detected, the algorithm skip the event and doesn't check if it's a slow wave)
+% (When an artifact is detected, the algorithm skips the event and doesn't check if it's a slow wave)
 
-% This function was inspired from crc_SWS_detect.m: written by J. Schrouff & C. Phillips, 2009, Cyclotron Research Centre, University of Liege, Belgium
+% This function was built based on 'crc_SWS_detect' written by J. Schrouff & C. Phillips, 2009, Cyclotron Research Centre, University of Liege, Belgium
 % from the FASST toolbox: Leclercq Y., Schrouff J., Noirhomme Q., Maquet P. and Phillips C. (2011) 
 % fMRI Artefact Rejection and Sleep Scoring Toolbox, Computational Intelligence and Neuroscience, vol. 2011, Article ID, 598206, 11 pages. doi:10.1155/2011/598206.
 
@@ -53,7 +54,7 @@ for imsi=1:size(MSI,2)-1
 			else
 				iUZC= find(diff(F2(iDZC:end)) ==2) + iDZC-1;
 			end	
-			if ~isempty(iUZC)&& ~isempty(indiceDZC)	&& red(posmin)==0						% not  ~isempty(iDZC)
+			if ~isempty(iUZC)&& ~isempty(indiceDZC)	&& red(posmin)==0					
 				iUZC=iUZC(1);		
 
 			
@@ -63,7 +64,6 @@ for imsi=1:size(MSI,2)-1
 					red(iUZC) == 0								
 
 					%% Negative peak magnitude
-					% if valmin <= def.SWmAmpl(1)						
 					
 					upperboundPicPositif = size(F1,2) - (iUZC +(def.rate*def.SWlength(3)/1000));
 					if upperboundPicPositif > 0
@@ -91,7 +91,7 @@ for imsi=1:size(MSI,2)-1
 						else 
 							indposmax = [];
 						end
-						% disp('duration between the up-zero-crossing and the down-zero-crossing just after positive peak, is ok');
+						% disp('duration between the up-zero-crossing subsequent to negative peak and the down-zero-crossing subsequent to positive peak, is ok');
 					else
 						[valmax, indposmax]= max(F1(iUZC:end));
 					end
@@ -99,10 +99,8 @@ for imsi=1:size(MSI,2)-1
 					if ~isempty(indposmax)
 						posmax = iUZC-1 + indposmax;
 						% disp(num2str(valmax));
-					% end	
 
-					% if ~isempty(posmax) && ...
-						% red(posmax) == 0
+
 						if	red(posmax) == 0
 						% disp('No artifact');
 						%% Criterion on peak to peak magnitude 				
