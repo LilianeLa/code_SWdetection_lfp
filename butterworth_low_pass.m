@@ -21,7 +21,7 @@ b = filter(num,den,V);
 % plot(t,b,'g');
 % hold on
 % plot(t,V); 
-% grid
+% grid 
 % xlabel('Timepoints (index) [-]');
 % ylabel('Voltage [microV]');
 % legend('Filtered signal (low-pass)', 'Original signal');
