@@ -1,4 +1,5 @@
-% principal.m is the main function.
+% principal_no_TTL is the main function when testing our first hypothesis. Indeed we don't need any TTL signal: we just want to determine the amount of SWs at week 1 and week x. 
+% For the first hypothesis we don't need to identify of slow waves occurring just before and after operant actions (pre-waves and post-waves)
 
 % e.g. 
 %			   >> SW = principal_no_TTL(SA34_27_06_2014_0003.values);						
@@ -10,7 +11,7 @@
 	% def.fsample = 20000;		% e.g. for SA14 	
 
 	
-function SW = principal_no_TTL(V)					% if there isn't any TTL signal, then the identification of slow waves occurring just before and after operant actions is not possible
+function SW = principal_no_TTL(V)				
 
 global def b bHP artifact red t s SW
 
