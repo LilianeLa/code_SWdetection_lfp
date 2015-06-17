@@ -1,34 +1,22 @@
-% The aim of this function is to detect at which indexes are localised the artifacts, and display them in a list. 
-% For this purpose, a vector (named 'red') initialized as a vector of 0 of same length as the original signal, will be used. Its aim is to indicate the occurrences of artifacts: 
-% the vector will take the value "1" for each timepoint index of the original signal, when corresponding to an artifact. 
+% The general strategy was to build a function which:
+% 1. Detects the timings of all the artifacts of a signal (i.e. at which timepoints are localised the artifacts).
+% 2. Stores them into a specific vector (storing all the timepoints of the artifacts). This vector will be used further, to identify at specific timepoints (of a possible slow wave) if there is a coincidence or not with an artifact. (See 'find_slow_waves')
+% 3. Displays the artifacts in a list. This list is just informative for the user in the case he is interested in the detection of artifacts. 
+% All the necessary information for the step of detection of slow waves, is stored in the appropriate vector.
 
-% 'red' will be used in 'find_slow_waves' to indicate if there is an artifact (value equal to 1), or not (value equal to 0)
-% 1) For all timepoints where the voltage amplitude (of the high-pass filtered signal) is higher than def.amplitude_artifact, 
-%			-> 'red' takes the value 1 at the corresponding time-point index 
-% 2) For all timepoints comprised between 2 indexes of the first loop, and verifying def.artifact_cut_length (i.e. not far from each other)
-% 		-> 'red' takes the value 1 at all these time-point indexes
-% 3) For all timepoints corresponding to the slow component of the artifact,
-% 		-> 'red' takes the value 1 
+% (The function does not perform a filtering of artifacts. We do not remove them, we just detect when they appear and keep them into a vector which will be used further in the detection of slow waves.)
 
-% In 'find_slow_waves', 'red' will be checked at indexes of downward zero-crossing, negative peak, upward zero-crossing and positive peak, to see if they are part of artifact or not.
-% (When there is an artifact detected, the algorithm skip the event and doesn't check if it's a slow wave)
+% The aim of 'find_artifacts' is to detect at which timepoint indexes are localised the artifacts. 
+% For this purpose, a vector initialised as a vector of 0 of same length as the original signal, was used (named 'red'). The vector takes the value 1 for each index corresponding to an artifact. 
+% All indexes corresponding to a 0 in this vector signify an absence of artifact for the same indexes in the original signal.
 
 % For each detected artifact, are displayed:
 % 1. the beginning of the artifact, which is the beginning of the fast component;
 % 2. the end of the fast component;
-% 3. the end of the first sub-component2 in the slow component, if a slow component exists. It is defined as the first zero-crossing occurring just after the last high value of the first sub-component) 3;
+% 3. the end of the first sub-component in the slow component, if a slow component exists. It is defined as the first zero-crossing occurring just after the last high value of the first sub-component);
 % 4. the end of the total artifact: either the end of the slow component (in most cases), or the end of fast component if there is no slow component;
 
-% NB: thresholds from lfp_defaults used in this file (the user can modify them if necessary). 
-% def.butterorder = 2; 		
-% def.fcuthigh = 100 ; 					
-% def.amplitude_artifact = 35;			% Threshold of amplitude of the fast component of the artifact = amplitude in the high-pass filtered signal 
-% def.artifact_cut_length = 1.7*def.fsample;			
-% def.amplitude_slow_artifact = 27;		% Threshold of amplitude of the slow component of the artifact 
-% def.endslow = 1;						% Maximal interval authorized between the first high value found for bLP and the first zero-crossing (in seconds)
-% def.amplitudediapason = 16;				
-% def.durationdiapason = 0.65;			
-% def.duration_slow_artifact	= 1;		
+
 
 
 function [red, bHP] =  find_artifacts(V)	
@@ -178,8 +166,6 @@ for h = 1 : length(iHighBHP)-1
 			end 
 		end 		
 			
-		%%%%%% ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-		%%%%%% ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 		
 		countartifacts = countartifacts+1;   
 		disp(' ');
@@ -281,8 +267,7 @@ if iHighBHP ~=0					% if ~isempty(iHighBHP)						% We examine the last artifact 
 		end 
 	end 
 
-	%%%%%% ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	%%%%%% ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 	
 else 
 	disp('There''s no artifact');
