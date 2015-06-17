@@ -1,4 +1,4 @@
-% principal.m is the main function.
+% principal_timelocking is the main function when we want to verify our second hypothesis. 
 
 % e.g. 
 %			   >> [SW, countBP, countP300, countrandSW]  = principal_timelocking(SA34_27_06_2014_0003.values, ttl.times);						
@@ -10,9 +10,7 @@
 	% def.fsample = 20000;		% e.g. for SA14 	
 
 	
-% function SW = principal(V)					% if there isn't any TTL signal, then the detection of slow waves occurring just before and after operant actions is not possible
-% function SW = principal(V, vertical)		% if there is a TTL signal, then the detection of slow waves occurring just before and after operant actions is possible
-function [SW, countBP, countP300, countrandSW]  = principal_timelocking(V, vertical)		% and put the right line below of detection of pre-waves and post-waves, and the good function corresponding
+function [SW, countBP, countP300, countrandSW]  = principal_timelocking(V, vertical)		% if there is a TTL signal, then the detection of slow waves occurring just before and after operant actions is possible
 
 global def b bHP artifact red t s SW
 
@@ -29,14 +27,13 @@ disp('**************************************************************************
 disp('                                      II. DETECTION OF SLOW WAVES                                        ');
 disp('*********************************************************************************************************');
 disp(' ');
-SW = find_slow_waves_modif(b);
+SW = find_slow_waves(b);
 
 disp(' ');
 disp(' ');
 disp('*********************************************************************************************************');
 disp('              III. DETECTION OF SLOW WAVES OCCURRING JUST BEFORE AND AFTER OPERANT ACTIONS               ');
 disp('*********************************************************************************************************');
-% find_BP_P300_randSW_modifOA(vertical, SW, V);				
 [countBP, countP300, countrandSW] = find_BP_P300_randSW_modifOA(vertical, SW, V);				
 
 
